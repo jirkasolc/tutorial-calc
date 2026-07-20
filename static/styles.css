@@ -1,0 +1,115 @@
+:root {
+  color-scheme: dark;
+  --bg: #07111f;
+  --panel: rgba(24, 37, 60, 0.95);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #f8fbff;
+  --muted: #8c97ac;
+  --accent: #7c8cff;
+  --accent-2: #32d4ff;
+  --operator: #25304d;
+  --digit: #14233d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #14243d 0%, var(--bg) 70%);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.app-shell {
+  width: min(100%, 420px);
+}
+
+.calculator-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(18px);
+}
+
+.display-area {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 18px 16px;
+  margin-bottom: 18px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.label {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+.expression {
+  font-size: 1rem;
+  color: var(--muted);
+  min-height: 1.5rem;
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+
+.result {
+  font-size: 2rem;
+  font-weight: 700;
+  min-height: 2.5rem;
+  word-break: break-all;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+button {
+  border: none;
+  border-radius: 16px;
+  padding: 16px 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+button:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.digit-btn {
+  background: var(--digit);
+  color: var(--text);
+}
+
+.operator-btn,
+.action-btn {
+  background: var(--operator);
+  color: #dfe7ff;
+}
+
+.equals-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+}
+
+button:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}

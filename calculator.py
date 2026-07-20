@@ -111,7 +111,8 @@ def safe_eval(expression: str) -> float:
 def read_index():
     index_file = STATIC_DIR / "index.html"
     if not index_file.exists():
-        raise HTTPException(status_code=404, detail="index.html not found")
+        # Return a friendly JSON response explaining missing assets
+        raise HTTPException(status_code=404, detail="Static UI not found. Ensure static/index.html is present.")
     return FileResponse(index_file)
 
 

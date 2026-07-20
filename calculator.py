@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import math
 import ast
 import operator
+import os
 
 app = FastAPI(title="Calculator API")
 
@@ -13,6 +15,22 @@ BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# CORS: allow origins configured via ALLOW_ORIGINS env var (comma-separated). Default to same-origin only.
+allow_origins = os.getenv("ALLOW_ORIGINS")
+if allow_origins:
+    origins = [o.strip() for o in allow_origins.split(",") if o.strip()]
+else:
+    origins = []
+
+if origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 class CalcRequest(BaseModel):
@@ -42,27 +60,59 @@ def safe_eval(expression: str) -> float:
 
     tree = ast.parse(expression, mode="eval")
 
+    # Safety limits
+    MAX_EXPONENT = 100
+    MAX_RESULT_ABS = 1e12
+
     def _eval(node):
+        # Numbers (ast.Constant for py3.8+, ast.Num for older ASTs)
         if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
             return float(node.value)
+        if isinstance(node, ast.Num):
+            return float(node.n)
+
+        # Binary operations
         if isinstance(node, ast.BinOp) and type(node.op) in ALLOWED_OPERATORS:
             left = _eval(node.left)
             right = _eval(node.right)
-            return ALLOWED_OPERATORS[type(node.op)](left, right)
+
+            # Mitigate huge exponents (DoS)
+            if isinstance(node.op, ast.Pow) or type(node.op) is ast.Pow:
+                if abs(right) > MAX_EXPONENT:
+                    raise ValueError("Exponent too large")
+
+            result = ALLOWED_OPERATORS[type(node.op)](left, right)
+
+            if not math.isfinite(result) or abs(result) > MAX_RESULT_ABS:
+                raise ValueError("Result is not finite or exceeds allowed magnitude")
+
+            return result
+
+        # Unary ops
         if isinstance(node, ast.UnaryOp) and type(node.op) in ALLOWED_OPERATORS:
             operand = _eval(node.operand)
-            return ALLOWED_OPERATORS[type(node.op)](operand)
-        raise ValueError("Unsupported expression")
+            result = ALLOWED_OPERATORS[type(node.op)](operand)
+            if not math.isfinite(result) or abs(result) > MAX_RESULT_ABS:
+                raise ValueError("Result is not finite or exceeds allowed magnitude")
+            return result
+
+        # Unsupported nodes
+        raise ValueError(f"Unsupported expression node: {type(node).__name__}")
+
+    # Only allow an Expression AST at top-level
+    if not isinstance(tree, ast.Expression):
+        raise ValueError("Invalid expression")
 
     result = _eval(tree.body)
-    if not math.isfinite(result):
-        raise ValueError("Result is not finite")
     return result
 
 
 @app.get("/")
 def read_index():
-    return FileResponse(STATIC_DIR / "index.html")
+    index_file = STATIC_DIR / "index.html"
+    if not index_file.exists():
+        raise HTTPException(status_code=404, detail="index.html not found")
+    return FileResponse(index_file)
 
 
 @app.post("/api/calc", response_model=CalcResponse)

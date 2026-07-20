@@ -28,3 +28,8 @@ API
 ---
 
 POST JSON `{ "expression": "2+2" }` to `/api/calc` to evaluate an expression.
+
+
+---
+
+This branch adds the pinned `requirements.txt` and a `README.md` with install/run instructions to address Issue #1.

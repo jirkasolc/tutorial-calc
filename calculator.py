@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import math
 import ast
 import operator
+import os
 
 app = FastAPI(title="Calculator API")
 
@@ -13,6 +15,22 @@ BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# CORS: allow origins configured via ALLOW_ORIGINS env var (comma-separated). Default to same-origin only.
+allow_origins = os.getenv("ALLOW_ORIGINS")
+if allow_origins:
+    origins = [o.strip() for o in allow_origins.split(",") if o.strip()]
+else:
+    origins = []
+
+if origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 class CalcRequest(BaseModel):
@@ -62,7 +80,11 @@ def safe_eval(expression: str) -> float:
 
 @app.get("/")
 def read_index():
-    return FileResponse(STATIC_DIR / "index.html")
+    index_file = STATIC_DIR / "index.html"
+    if not index_file.exists():
+        # Return a friendly JSON response explaining missing assets
+        raise HTTPException(status_code=404, detail="Static UI not found. Ensure static/index.html is present.")
+    return FileResponse(index_file)
 
 
 @app.post("/api/calc", response_model=CalcResponse)

@@ -6,7 +6,6 @@ let currentExpression = '';
 
 function updateDisplay() {
   expressionEl.textContent = currentExpression || '0';
-  displayEl.textContent = '0';
 }
 
 function appendValue(value) {

@@ -1,0 +1,30 @@
+<svg width="760" height="360" viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simple layered architecture diagram for the calculator application">
+  <rect x="20" y="20" width="720" height="320" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  <text x="380" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#0f172a">Layered Application Architecture</text>
+
+  <rect x="90" y="100" width="180" height="90" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="180" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#1e3a8a">Browser Client</text>
+  <text x="180" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#334155">HTML, CSS, JavaScript</text>
+
+  <rect x="320" y="100" width="180" height="90" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="410" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#166534">FastAPI API</text>
+  <text x="410" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#334155">/ and /api/calc routes</text>
+
+  <rect x="550" y="100" width="140" height="90" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="620" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#92400e">Static Assets</text>
+  <text x="620" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#334155">index.html, styles.css</text>
+
+  <rect x="300" y="240" width="220" height="90" rx="12" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+  <text x="410" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#9d174d">Safe Evaluator</text>
+  <text x="410" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#334155">AST-based math evaluation</text>
+
+  <line x1="270" y1="145" x2="320" y2="145" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="500" y1="145" x2="550" y2="145" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="410" y1="190" x2="410" y2="240" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+</svg>

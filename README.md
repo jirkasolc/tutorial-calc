@@ -2,6 +2,14 @@
 
 This project is a small calculator application that runs in your web browser. It uses Python to evaluate math expressions like `2+2` and shows the result on a simple page.
 
+## Architecture
+
+This application follows a simple layered architecture with a browser client, a FastAPI web API, and a safe expression evaluation component.
+
+<div align="center">
+  <img src="static/architecture-diagram.svg" alt="Simple layered architecture diagram for the calculator application" width="760" />
+</div>
+
 ## What you need
 
 - A Mac or Linux computer
@@ -13,7 +21,7 @@ This project is a small calculator application that runs in your web browser. It
 Open a terminal and go to the project folder using your home directory shortcut `~`:
 
 ```bash
-cd ~/Developer/PERSONAL/tutorial-calc
+cd ~/dev/tutorial-calc
 ```
 
 If your project folder is somewhere else, use the same idea with `~` and the folder path after it.

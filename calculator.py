@@ -65,11 +65,9 @@ def safe_eval(expression: str) -> float:
     MAX_RESULT_ABS = 1e12
 
     def _eval(node):
-        # Numbers (ast.Constant for py3.8+, ast.Num for older ASTs)
+        # Numbers (ast.Constant only for Python 3.14)
         if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
             return float(node.value)
-        if isinstance(node, ast.Num):
-            return float(node.n)
 
         # Binary operations
         if isinstance(node, ast.BinOp) and type(node.op) in ALLOWED_OPERATORS:
@@ -111,12 +109,8 @@ def safe_eval(expression: str) -> float:
 def read_index():
     index_file = STATIC_DIR / "index.html"
     if not index_file.exists():
-<<<<<<< HEAD
-        raise HTTPException(status_code=404, detail="index.html not found")
-=======
         # Return a friendly JSON response explaining missing assets
         raise HTTPException(status_code=404, detail="Static UI not found. Ensure static/index.html is present.")
->>>>>>> fc8760bfdaedd1b7593b53ba4ddd35ca308bdedb
     return FileResponse(index_file)
 
 
